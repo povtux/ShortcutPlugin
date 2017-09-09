@@ -70,14 +70,17 @@ namespace ShortcutPlugin
                         Console.WriteLine(url);
                         dl.DownloadFile(url, launch.Name + "_fav.ico");
                         if (File.Exists(Path.Combine(dl.GetDestFolder(), launch.Name + "_fav.ico"))) {
-                            PictureBox pb2 = new PictureBox
+                            try
                             {
-                                Image = new Icon(Path.Combine(dl.GetDestFolder(), launch.Name + "_fav.ico"), 24, 24).ToBitmap(),
-                                Width = 24,
-                                Height = 24,
-                                SizeMode = PictureBoxSizeMode.Zoom
-                            };
-                            rootpane.Controls.Add(pb2, 1, row);
+                                PictureBox pb2 = new PictureBox
+                                {
+                                    Image = new Icon(Path.Combine(dl.GetDestFolder(), launch.Name + "_fav.ico"), 24, 24).ToBitmap(),
+                                    Width = 24,
+                                    Height = 24,
+                                    SizeMode = PictureBoxSizeMode.Zoom
+                                };
+                                rootpane.Controls.Add(pb2, 1, row);
+                            } catch(ArgumentException e) { }
                         }
                     }
                 }
