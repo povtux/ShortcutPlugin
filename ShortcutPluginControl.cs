@@ -2,6 +2,8 @@
 using System.Windows.Forms;
 using System.Diagnostics;
 using ShortcutPlugin.Properties;
+using System.Drawing;
+using System.IO;
 
 namespace ShortcutPlugin
 {
@@ -18,12 +20,14 @@ namespace ShortcutPlugin
          
             int row = 0;
             LinkLabel ll;
+            string url;
             foreach (Launcher launch in Config.Instance.Launchers)
             {
                 Console.WriteLine(launch.Name);
                 ll = new LinkLabel
                 {
                     Text = launch.Name,
+                    TextAlign = ContentAlignment.BottomLeft
                 };
                 ll.LinkClicked += (sender, args) => {
                     if(launch.Type == Launcher.TYPE_APPLICATION)
@@ -45,21 +49,37 @@ namespace ShortcutPlugin
                     }
                 };
                 rootpane.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-                rootpane.Controls.Add(ll, 1, row);
+                rootpane.Controls.Add(ll, 2, row);
                 if(launch.VPN)
                 {
                     PictureBox pb = new PictureBox
                     {
                         Image = Resources.vpn,
-                        Width = 14,
-                        Height = 14,
+                        Width = 24,
+                        Height = 24,
                         SizeMode = PictureBoxSizeMode.Zoom
                     };
                     rootpane.Controls.Add(pb, 0, row);
                 }
-
-             
-                row ++;
+                if (launch.Type == Launcher.TYPE_URL)
+                {
+                    var parts = launch.Subject.Split('/');
+                    if (parts.Length >= 3)
+                    {
+                        url = parts[0] + "//" + parts[2] + "/favicon.ico";
+                        Console.WriteLine(url);
+                        dl.DownloadFile(url, launch.Name + "_fav.ico");
+                        PictureBox pb2 = new PictureBox
+                        {
+                            Image = new Icon(Path.Combine(dl.GetDestFolder(), launch.Name + "_fav.ico"), 24, 24).ToBitmap(),
+                            Width = 24,
+                            Height = 24,
+                            SizeMode = PictureBoxSizeMode.Zoom
+                        };
+                        rootpane.Controls.Add(pb2, 1, row);
+                    }
+                }
+                row++;
             }
         }
     }

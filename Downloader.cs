@@ -14,6 +14,14 @@ namespace ShortcutPlugin
     class Downloader
     {
         private Boolean initOk = false;
+        private String destFolder;
+
+        public Downloader()
+        {
+            destFolder = Path.Combine(Environment.GetFolderPath(SpecialFolder.CommonApplicationData), "quicklauncher");
+            if (!Directory.Exists(destFolder))
+                Directory.CreateDirectory(destFolder);
+        }
 
         public void LoadRessources()
         {
@@ -27,21 +35,8 @@ namespace ShortcutPlugin
 
             Console.WriteLine(url);
 
-            // Get XML config File
-            WebClient webClient = new WebClient();
-            webClient.DownloadFile(url, Path.Combine(Path.GetTempPath(), "quicklauncher.xml"));
-
-            // déplacement du fichier à son emplacement définitif
-            String destFolder = Path.Combine(Environment.GetFolderPath(SpecialFolder.CommonApplicationData), "quicklauncher");
-            if (!Directory.Exists(destFolder))
-                Directory.CreateDirectory(destFolder);
-
+            DownloadFile(url, "conf.xml");
             String destFile = Path.Combine(destFolder, "conf.xml");
-            if (File.Exists(destFile))
-                File.Delete(destFile);
-
-            File.Move(Path.Combine(Path.GetTempPath(), "quicklauncher.xml"), destFile);
-
             // traitement du XML
             Config.Instance.LoadFromXML(destFile);
 
@@ -51,12 +46,32 @@ namespace ShortcutPlugin
             initOk = true;
         }
 
+        public void DownloadFile(string url, string fileName)
+        {
+            // Get XML config File
+            WebClient webClient = new WebClient();
+            webClient.DownloadFile(url, Path.Combine(Path.GetTempPath(), "quicklauncher.tmp"));
+
+            // déplacement du fichier à son emplacement définitif
+
+            String destFile = Path.Combine(destFolder, fileName);
+            if (File.Exists(destFile))
+                File.Delete(destFile);
+
+            File.Move(Path.Combine(Path.GetTempPath(), "quicklauncher.tmp"), destFile);
+        }
+
         public Boolean InitOk
         {
             get
             {
                 return initOk;
             }
+        }
+
+        public string GetDestFolder()
+        {
+            return destFolder;
         }
     }
 }

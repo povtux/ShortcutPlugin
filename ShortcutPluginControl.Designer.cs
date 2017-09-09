@@ -45,9 +45,10 @@
             // rootpane
             // 
             this.rootpane.AutoScroll = true;
-            this.rootpane.ColumnCount = 2;
+            this.rootpane.ColumnCount = 3;
             this.rootpane.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.rootpane.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.rootpane.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.rootpane.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.rootpane.Location = new System.Drawing.Point(3, 3);
             this.rootpane.Name = "rootpane";
             this.rootpane.RowCount = 1;
