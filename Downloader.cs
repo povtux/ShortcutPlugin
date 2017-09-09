@@ -48,17 +48,23 @@ namespace ShortcutPlugin
 
         public void DownloadFile(string url, string fileName)
         {
-            // Get XML config File
-            WebClient webClient = new WebClient();
-            webClient.DownloadFile(url, Path.Combine(Path.GetTempPath(), "quicklauncher.tmp"));
+            try
+            {
+                // Get XML config File
+                WebClient webClient = new WebClient();
+                webClient.DownloadFile(url, Path.Combine(Path.GetTempPath(), "quicklauncher.tmp"));
 
-            // déplacement du fichier à son emplacement définitif
+                // déplacement du fichier à son emplacement définitif
 
-            String destFile = Path.Combine(destFolder, fileName);
-            if (File.Exists(destFile))
-                File.Delete(destFile);
+                String destFile = Path.Combine(destFolder, fileName);
+                if (File.Exists(destFile))
+                    File.Delete(destFile);
 
-            File.Move(Path.Combine(Path.GetTempPath(), "quicklauncher.tmp"), destFile);
+                File.Move(Path.Combine(Path.GetTempPath(), "quicklauncher.tmp"), destFile);
+            }catch(WebException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         public Boolean InitOk
